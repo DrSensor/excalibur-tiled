@@ -53,7 +53,7 @@ export class TiledMapResource implements Loadable<TiledMap> {
    public convertPath: (originPath: string, relativePath: string) => string;
 
    constructor(public path: string, mapFormatOverride?: TiledMapFormat) {
-      const detectedType = mapFormatOverride ?? (path.includes('.tmx') ? TiledMapFormat.TMX : TiledMapFormat.JSON); 
+      const detectedType = mapFormatOverride ?? (path.includes('.tmx') ? TiledMapFormat.TMX : TiledMapFormat.JSON);
       switch (detectedType) {
          case TiledMapFormat.TMX:
             this._resource = new Resource(path, 'text');
@@ -89,7 +89,7 @@ export class TiledMapResource implements Loadable<TiledMap> {
       if (camera) {
          scene.camera.x = camera.x;
          scene.camera.y = camera.y;
-         scene.camera.z = camera.zoom;
+         scene.camera.zoom = camera.zoom;
       }
    }
 
@@ -101,20 +101,20 @@ export class TiledMapResource implements Loadable<TiledMap> {
                pos: vec(collider.x, collider.y),
                collisionType: collider.collisionType ?? CollisionType.Fixed
             });
-   
+
             if (collider.color) {
                actor.color = Color.fromHex(collider.color.value);
             }
-            
-            if (collider.type === 'box') { 
+
+            if (collider.type === 'box') {
                actor.body.useBoxCollider(collider.width, collider.height, Vector.Zero);
             }
             if (collider.type === 'circle') {
                actor.body.useCircleCollider(collider.radius);
             }
-   
+
             scene.add(actor);
-            
+
             if (collider.zIndex) {
                actor.z = collider.zIndex;
             }
@@ -130,7 +130,7 @@ export class TiledMapResource implements Loadable<TiledMap> {
             const label = new Label({
                x: text.x,
                y: text.y + ((text.height ?? 0) - (text.text?.pixelSize ?? 0)),
-               text: text.text?.text ?? '', 
+               text: text.text?.text ?? '',
                fontFamily: text.text?.fontFamily,
                fontSize: text.text?.pixelSize,
                fontUnit: FontUnit.Px,
@@ -138,8 +138,8 @@ export class TiledMapResource implements Loadable<TiledMap> {
             label.font.textAlign = TextAlign.Left;
             label.font.baseAlign = BaseAlign.Top;
             label.rotation = text.rotation,
-            label.color = Color.fromHex(text.text?.color ?? '#000000'),
-            label.width = text.width ?? 0;
+               label.color = Color.fromHex(text.text?.color ?? '#000000'),
+               label.width = text.width ?? 0;
             label.height = text.height ?? 0;
             scene.add(label);
          }
@@ -167,6 +167,8 @@ export class TiledMapResource implements Loadable<TiledMap> {
                   rotation: tile.rotation,
                   collisionType
                });
+               if (tile.width && tile.height)
+                  actor.scale.setTo(tile.width / sprite.width, tile.width / sprite.width)
                if (Flags.isEnabled('use-legacy-drawing')) {
                   actor.addDrawing(sprite);
                } else {
@@ -205,7 +207,7 @@ export class TiledMapResource implements Loadable<TiledMap> {
       const tm = this.getTileMap();
       tm.components.transform.z = -1;
       scene.add(tm);
-      
+
       this._parseExcaliburInfo();
       this._addTiledCamera(scene);
       this._addTiledColliders(scene);
@@ -352,7 +354,7 @@ export class TiledMapResource implements Loadable<TiledMap> {
       if (this.data) {
          for (var i = this.data.rawMap.tilesets.length - 1; i >= 0; i--) {
             var ts = this.data.rawMap.tilesets[i];
-   
+
             if (ts.firstgid <= gid) {
                return ts;
             }
