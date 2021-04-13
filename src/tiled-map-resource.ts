@@ -102,6 +102,10 @@ export class TiledMapResource implements Loadable<TiledMap> {
                collisionType: collider.collisionType ?? CollisionType.Fixed
             });
 
+            if (collider.tag) {
+               actor.addTag(collider.tag.value);
+            }
+
             if (collider.color) {
                actor.color = Color.fromHex(collider.color.value);
             }
@@ -142,6 +146,10 @@ export class TiledMapResource implements Loadable<TiledMap> {
                label.width = text.width ?? 0;
             label.height = text.height ?? 0;
             scene.add(label);
+            const tag = text.getProperty<string>('tag');
+            if (tag) {
+               label.addTag(tag.value);
+            }
          }
       }
    }
@@ -151,7 +159,7 @@ export class TiledMapResource implements Loadable<TiledMap> {
       if (excalibur.length > 0) {
          const inserted = excalibur.flatMap(o => o.getInsertedTiles());
          for (const tile of inserted) {
-            const collisionTypeProp = tile.getProperty<CollisionType>('collisionType');
+            const collisionTypeProp = tile.getProperty<CollisionType>('collisiontype');
             let collisionType = CollisionType.PreventCollision;
             if (collisionTypeProp) {
                collisionType = collisionTypeProp.value;
@@ -167,8 +175,9 @@ export class TiledMapResource implements Loadable<TiledMap> {
                   rotation: tile.rotation,
                   collisionType
                });
-               if (tile.width && tile.height)
-                  actor.scale.setTo(tile.width / sprite.width, tile.width / sprite.width)
+               if (tile.width && tile.height) {
+                  actor.scale.setTo(tile.width / sprite.width, tile.width / sprite.width);
+               }
                if (Flags.isEnabled('use-legacy-drawing')) {
                   actor.addDrawing(sprite);
                } else {
@@ -179,6 +188,10 @@ export class TiledMapResource implements Loadable<TiledMap> {
                const z = tile.getProperty<number>('zindex');
                if (z) {
                   actor.z = +z.value;
+               }
+               const tag = tile.getProperty<string>('tag');
+               if (tag) {
+                  actor.addTag(tag.value);
                }
             }
          }
@@ -231,13 +244,14 @@ export class TiledMapResource implements Loadable<TiledMap> {
          for (let box of boxColliders) {
             const collisionType = box.getProperty<CollisionType>('collisiontype');
             const color = box.getProperty<string>('color');
+            const tag = box.getProperty<string>('tag');
             const zIndex = box.getProperty<number>('zindex');
             ex.colliders.push({
                ...box,
                width: +(box.width ?? 0),
                height: +(box.height ?? 0),
                collisionType: collisionType?.value ?? CollisionType.Fixed,
-               color,
+               color, tag,
                zIndex: +(zIndex?.value ?? 0),
                radius: 0,
                type: 'box'
@@ -248,13 +262,14 @@ export class TiledMapResource implements Loadable<TiledMap> {
          for (let circle of circleColliders) {
             var collisionType = circle.getProperty<CollisionType>('collisiontype');
             var color = circle.getProperty<string>('color');
+            var tag = circle.getProperty<string>('tag');
             var zIndex = circle.getProperty<number>('zindex');
             ex.colliders.push({
                x: circle.x,
                y: circle.y,
                radius: Math.max(circle.width ?? 0, circle.height?? 0),
                collisionType: collisionType?.value ?? CollisionType.Fixed,
-               color,
+               color, tag,
                zIndex: +(zIndex?.value ?? 0),
                width: circle.width ?? 0,
                height: circle.height ?? 0,

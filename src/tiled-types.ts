@@ -93,6 +93,7 @@ export interface ExcaliburCollider {
    type: 'box' | 'circle';
    collisionType: ex.CollisionType;
    color: TiledProperty<string> | undefined;
+   tag: TiledProperty<string> | undefined;
    zIndex: number;
    x: number;
    y: number;
