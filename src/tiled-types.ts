@@ -8,7 +8,7 @@ export interface RawTiledMap {
    type: 'map';
    ex: ExcaliburData;
    version: number;
-   
+
    width: number;
    /**
     * Number of tile rows
@@ -47,7 +47,7 @@ export interface RawTiledMap {
     * Auto-increments for each placed object
     */
    nextobjectid: number;
-   
+
    /**
     * Map orientation (orthogonal, isometric, staggered or hexagonal)
     */
@@ -397,6 +397,16 @@ export interface RawTiledTileset {
     * Array of Tiles (optional)
     */
    tiles: TiledTile[];
+
+   /**
+    * Hold animation and tile collision (objectgroup) data
+    */
+   tile?: {
+      id: number
+      animation?: { frame: TiledFrame }
+      /** Tile collision data */
+      objectgroup?: RawTiledLayer
+   }
 
    name: string;
    properties: TiledProperty[];
