@@ -179,8 +179,9 @@ export class TiledMapResource implements Loadable<TiledMap> {
                   rotation: tile.rotation,
                   collisionType
                });
-               if (tile.width && tile.height) {
-                  actor.scale.setTo(tile.width / sprite.width, tile.width / sprite.width);
+               if (tile.width || tile.height) {
+                  if (tile.width) actor.scale.x = tile.width / sprite.width;
+                  if (tile.height) actor.scale.y = tile.height / sprite.height;
                }
                if (Flags.isEnabled('use-legacy-drawing')) {
                   actor.addDrawing(sprite);
@@ -251,7 +252,8 @@ export class TiledMapResource implements Loadable<TiledMap> {
             const tag = box.getProperty<string>('tag');
             const zIndex = box.getProperty<number>('zindex');
             ex.colliders.push({
-               ...box,
+               x: box.x,
+               y: box.y,
                width: +(box.width ?? 0),
                height: +(box.height ?? 0),
                collisionType: collisionType?.value ?? CollisionType.Fixed,
