@@ -1,3 +1,5 @@
+import type { Actor } from 'excalibur'
+
 import { ExcaliburCamera, TiledPoint } from "./tiled-types";
 import { TiledEntity } from "./tiled-entity";
 
@@ -92,6 +94,10 @@ export class TiledObject extends TiledEntity {
     * Present on inserted tile objects
     */
    public gid?: number;
+   /**
+    * Instance of [[excalibur.Actor]] as long as the tile object has "collisiontype" property
+    */
+   public actor?: Actor;
 }
 
 export interface TiledText {

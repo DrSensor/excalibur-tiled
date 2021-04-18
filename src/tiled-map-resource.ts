@@ -94,10 +94,14 @@ export class TiledMapResource implements Loadable<TiledMap> {
    }
 
    private _addTiledColliders(scene: Scene) {
+      const getObjectsByType = (type: string) => this.data?.getExcaliburObjects().flatMap(o => o.getObjectsByType('boxcollider'));
+      const tiles = getObjectsByType('boxcollider').concat(getObjectsByType('circlecollider'));
       const colliders = this.ex.colliders;
       if (colliders) {
-         for (let collider of colliders) {
-            const actor = new Actor({
+         for (const i in colliders) {
+            const collider = colliders[i]
+            const tile = tiles[i]
+            const actor = tile.actor = new Actor({
                pos: vec(collider.x, collider.y),
                collisionType: collider.collisionType ?? CollisionType.Fixed
             });
@@ -166,7 +170,7 @@ export class TiledMapResource implements Loadable<TiledMap> {
             }
             if (tile.gid) {
                const sprite = this.getSpriteForGid(tile.gid);
-               const actor = new Actor({
+               const actor = tile.actor = new Actor({
                   x: tile.x,
                   y: tile.y,
                   width: tile.width,
